@@ -1,0 +1,3 @@
+clients:
+  payment:
+    base-url: localhost
