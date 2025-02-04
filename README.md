@@ -1,8 +1,7 @@
 ## Playground-java
 
-### RateLimiter
-- Token bucket
-- Leaky bucket
-- Fixed window
-- Sliding window logs
-- Sliding window counter
+Rate limiter
+
+Http Interface
+
+BeanPostProcessor / BeanFactoryPostProcessor
