@@ -1,4 +1,4 @@
-package com.teamhide.playground.functionalconfig;
+package com.teamhide.playground.functionalconfig.security;
 
 public class SecurityConfig {
     public static void main(String[] args) {

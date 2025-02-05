@@ -1,4 +1,4 @@
-package com.teamhide.playground.functionalconfig;
+package com.teamhide.playground.functionalconfig.security;
 
 @FunctionalInterface
 public interface Customizer<T> {
