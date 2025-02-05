@@ -74,3 +74,7 @@ project(":beanprocessor") {
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
 	}
 }
+
+project(":functionalconfig") {
+	dependencies {}
+}
