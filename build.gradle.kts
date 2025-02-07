@@ -78,3 +78,25 @@ project(":beanprocessor") {
 project(":functionalconfig") {
 	dependencies {}
 }
+
+project(":webflux-world") {
+	apply(plugin = "org.springframework.boot")
+	apply(plugin = "io.spring.dependency-management")
+
+	dependencies {
+		implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+		implementation("org.springframework.boot:spring-boot-starter-web")
+		implementation("org.springframework.boot:spring-boot-starter-webflux")
+		implementation("org.springframework.boot:spring-boot-starter-validation")
+		implementation("io.asyncer:r2dbc-mysql:1.3.1")
+		implementation("org.flywaydb:flyway-core")
+		implementation("org.flywaydb:flyway-mysql")
+		implementation("io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64")
+		compileOnly("org.projectlombok:lombok")
+		runtimeOnly("com.mysql:mysql-connector-j")
+		annotationProcessor("org.projectlombok:lombok")
+		testImplementation("org.springframework.boot:spring-boot-starter-test")
+		testImplementation("io.projectreactor:reactor-test")
+		testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	}
+}

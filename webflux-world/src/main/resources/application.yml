@@ -1,0 +1,17 @@
+spring:
+  r2dbc:
+    name: playground
+    username: playground
+    password: playground
+    url: r2dbc:mysql://localhost:33061/playground
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    url: jdbc:mysql://localhost:33061/playground?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    user: playground
+    password: playground
+    locations: classpath:db/migration
+
+logging:
+  level:
+    org.springframework.r2dbc.core: debug
