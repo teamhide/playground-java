@@ -2,8 +2,8 @@ package com.teamhide.playground.webfluxworld.controller;
 
 import com.teamhide.playground.webfluxworld.controller.dto.RegisterMemberRequest;
 import com.teamhide.playground.webfluxworld.repository.Member;
-import com.teamhide.playground.webfluxworld.repository.MemberRepository;
 import com.teamhide.playground.webfluxworld.service.MemberService;
+import com.teamhide.playground.webfluxworld.service.dto.MemberDto;
 import com.teamhide.playground.webfluxworld.service.dto.RegisterMemberRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class MemberController {
     }
 
     @PostMapping("")
-    public Mono<Void> registerMember(@RequestBody @Valid final RegisterMemberRequest request) {
+    public Mono<MemberDto> registerMember(@RequestBody @Valid final RegisterMemberRequest request) {
         final RegisterMemberRequestDto requestDto = RegisterMemberRequestDto.builder()
                 .email(request.getEmail())
                 .nickname(request.getNickname())
