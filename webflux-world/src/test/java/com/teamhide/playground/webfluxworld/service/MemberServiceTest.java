@@ -1,7 +1,7 @@
 package com.teamhide.playground.webfluxworld.service;
 
-import com.teamhide.playground.webfluxworld.repository.Member;
-import com.teamhide.playground.webfluxworld.repository.MemberRepository;
+import com.teamhide.playground.webfluxworld.repository.rdb.Member;
+import com.teamhide.playground.webfluxworld.repository.rdb.MemberRepository;
 import com.teamhide.playground.webfluxworld.service.dto.MemberDto;
 import com.teamhide.playground.webfluxworld.service.dto.RegisterMemberRequestDto;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package com.teamhide.playground.webfluxworld.controller;
 
 import com.teamhide.playground.webfluxworld.controller.dto.RegisterMemberRequest;
-import com.teamhide.playground.webfluxworld.repository.Member;
+import com.teamhide.playground.webfluxworld.repository.rdb.Member;
 import com.teamhide.playground.webfluxworld.service.MemberService;
 import com.teamhide.playground.webfluxworld.service.dto.MemberDto;
 import com.teamhide.playground.webfluxworld.service.dto.RegisterMemberRequestDto;

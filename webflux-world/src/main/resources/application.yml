@@ -11,6 +11,10 @@ spring:
     user: playground
     password: playground
     locations: classpath:db/migration
+  data:
+    mongodb:
+      uri: mongodb://playground:playground@localhost:27017/playground?authSource=admin
+      database: playground
 
 logging:
   level:

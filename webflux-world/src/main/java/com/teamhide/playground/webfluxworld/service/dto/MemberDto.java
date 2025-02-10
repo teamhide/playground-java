@@ -1,6 +1,6 @@
 package com.teamhide.playground.webfluxworld.service.dto;
 
-import com.teamhide.playground.webfluxworld.repository.Member;
+import com.teamhide.playground.webfluxworld.repository.rdb.Member;
 
 import java.time.LocalDateTime;
 

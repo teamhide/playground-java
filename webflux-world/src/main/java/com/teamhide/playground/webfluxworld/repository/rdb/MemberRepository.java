@@ -1,4 +1,4 @@
-package com.teamhide.playground.webfluxworld.repository;
+package com.teamhide.playground.webfluxworld.repository.rdb;
 
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 

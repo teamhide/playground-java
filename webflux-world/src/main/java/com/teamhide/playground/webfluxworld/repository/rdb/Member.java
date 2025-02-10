@@ -1,4 +1,4 @@
-package com.teamhide.playground.webfluxworld.repository;
+package com.teamhide.playground.webfluxworld.repository.rdb;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
