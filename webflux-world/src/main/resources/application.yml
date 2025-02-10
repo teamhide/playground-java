@@ -19,3 +19,4 @@ spring:
 logging:
   level:
     org.springframework.r2dbc.core: debug
+    org.springframework.data.mongodb.core: debug
