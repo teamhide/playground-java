@@ -7,6 +7,7 @@ import com.teamhide.playground.webfluxworld.repository.rdb.MemberRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -18,10 +19,14 @@ import java.util.List;
 public class DataInitializer {
     private final MemberRepository memberRepository;
     private final BannerRepository bannerRepository;
+    private final ReactiveRedisOperations<String, String> redisOperations;
 
     @PostConstruct
     public void init() {
         log.info("[*] Initializing data start");
+        redisOperations.keys("*")
+                .flatMap(redisOperations::delete)
+                .subscribe();
         Mono.when(memberRepository.deleteAll(), bannerRepository.deleteAll()).block();
 
         final Member member1 = Member.of("h@id.e", "hide", "a", "a");

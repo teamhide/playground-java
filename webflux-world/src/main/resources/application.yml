@@ -15,8 +15,12 @@ spring:
     mongodb:
       uri: mongodb://playground:playground@localhost:27017/playground?authSource=admin
       database: playground
+    redis:
+      host: localhost
+      port: 63792
 
 logging:
   level:
     org.springframework.r2dbc.core: debug
     org.springframework.data.mongodb.core: debug
+    org.springframework.data.redis.core: debug
