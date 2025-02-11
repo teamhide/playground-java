@@ -4,10 +4,12 @@ import com.teamhide.playground.webfluxworld.controller.dto.RegisterMemberRequest
 import com.teamhide.playground.webfluxworld.repository.rdb.Member;
 import com.teamhide.playground.webfluxworld.service.MemberService;
 import com.teamhide.playground.webfluxworld.service.dto.MemberDto;
+import com.teamhide.playground.webfluxworld.service.dto.MemberInfoDto;
 import com.teamhide.playground.webfluxworld.service.dto.RegisterMemberRequestDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,5 +37,10 @@ public class MemberController {
                 .password2(request.getPassword2())
                 .build();
         return memberService.register(requestDto);
+    }
+
+    @GetMapping("/{memberId}/info")
+    public Mono<MemberInfoDto> getMemberInfo(@PathVariable final Long memberId) {
+        return memberService.getMemberInfo(memberId);
     }
 }

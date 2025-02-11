@@ -8,7 +8,7 @@ public class WebClientConfig {
     @Bean
     public OrderClient orderClient() {
         final ClientProperties properties = ClientProperties.builder()
-                .baseUrl("localhost:8080")
+                .baseUrl("http://localhost:8080")
                 .connectTimeoutMillis(2000)
                 .readTimeoutMillis(2000)
                 .retryMaxAttempts(1)
@@ -21,7 +21,7 @@ public class WebClientConfig {
     @Bean
     public PointClient pointClient() {
         final ClientProperties properties = ClientProperties.builder()
-                .baseUrl("localhost:8080")
+                .baseUrl("http://localhost:8080")
                 .connectTimeoutMillis(2000)
                 .readTimeoutMillis(2000)
                 .retryMaxAttempts(1)

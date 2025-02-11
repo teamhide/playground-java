@@ -15,6 +15,6 @@ public class MockController {
 
     @GetMapping("/point")
     public Mono<GetPointResponse> getPoint() {
-        return Mono.just(GetPointResponse.builder().userId(1L).point(20000).build());
+        return Mono.just(GetPointResponse.builder().memberId(1L).point(20000).build());
     }
 }

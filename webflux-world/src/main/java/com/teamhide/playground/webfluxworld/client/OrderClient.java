@@ -24,6 +24,9 @@ public class OrderClient {
     public Mono<GetOrderResponse> getOrder() {
         final String path = "/order";
         final String uri = UriComponentsBuilder.fromPath(path).toUriString();
+        final String fullUri = properties.getBaseUrl() + uri;
+        log.info("PointClient | uri: {}", fullUri);
+
         return webClient.get()
                 .uri(uri)
                 .accept(MediaType.APPLICATION_JSON)
@@ -33,7 +36,10 @@ public class OrderClient {
                 )
                 .onStatus(HttpStatusCode::is5xxServerError, response -> Mono.error(new IllegalStateException()))
                 .bodyToMono(GetOrderResponse.class)
-                .onErrorResume(error -> Mono.error(IllegalStateException::new))
+                .onErrorResume(error -> {
+                    log.error("OrderClient | error: {}", error.getMessage());
+                    return Mono.error(IllegalStateException::new);
+                })
                 .retryWhen(
                         Retry.backoff(properties.getRetryMaxAttempts(), Duration.ofMillis(properties.getRetryBackoffMillis()))
                                 .filter(e -> e instanceof IllegalStateException)
