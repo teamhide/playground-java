@@ -39,6 +39,11 @@ public class MemberController {
         return memberService.register(requestDto);
     }
 
+    @GetMapping("/{memberId}")
+    public Mono<MemberDto> getMember(@PathVariable final Long memberId) {
+        return memberService.getMember(memberId);
+    }
+
     @GetMapping("/{memberId}/info")
     public Mono<MemberInfoDto> getMemberInfo(@PathVariable final Long memberId) {
         return memberService.getMemberInfo(memberId);
