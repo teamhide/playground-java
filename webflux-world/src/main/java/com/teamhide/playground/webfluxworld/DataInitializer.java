@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
+import org.springframework.data.redis.core.ReactiveValueOperations;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class DataInitializer {
+    public static final String BANNER_KEY_PREFIX = "banner_meta";
     private final MemberRepository memberRepository;
     private final BannerRepository bannerRepository;
     private final ReactiveRedisOperations<String, String> redisOperations;
@@ -31,11 +33,17 @@ public class DataInitializer {
 
         final Member member1 = Member.of("h@id.e", "hide", "a", "a");
         final Member member2 = Member.of("test@id.e", "test", "a", "a");
-        memberRepository.saveAll(List.of(member1, member2)).subscribe();
+        memberRepository.saveAll(List.of(member1, member2)).blockLast();
 
         final Banner banner1 = Banner.of("http://h.ide/1.jpg", "title1", "sub1");
         final Banner banner2 = Banner.of("http://h.ide/2.jpg", "title2", "sub2");
-        bannerRepository.saveAll(List.of(banner1, banner2)).subscribe();
+        bannerRepository.saveAll(List.of(banner1, banner2)).blockLast();
+
+        final ReactiveValueOperations<String, String> ops = redisOperations.opsForValue();
+        Mono.when(
+                ops.set(BANNER_KEY_PREFIX + ":" + banner1.getId(), "128"),
+                ops.set(BANNER_KEY_PREFIX + ":" + banner2.getId(), "55")
+        ).subscribe();
 
         log.info("[*] Initializing data end");
     }
