@@ -45,15 +45,7 @@ public class MemberService {
                 .doOnError(e -> log.error("getMember | error: {}", e))
                 .onErrorComplete()
                 .flatMap(memberRedis -> Mono.just(MemberDto.from(memberRedis)))
-                .switchIfEmpty(
-                        memberRepository.findById(memberId)
-                                .flatMap(memberRedis -> {
-                                    log.info("getMember | member is empty. memberId: {}", memberId);
-                                    final MemberRedis member = MemberRedis.from(memberRedis);
-                                    return memberRedisRepository.save(member).thenReturn(member);
-                                })
-                                .map(MemberDto::from)
-                );
+                .switchIfEmpty(Mono.defer(() -> getMemberFromDb(memberId)));
     }
 
     public Mono<MemberInfoDto> getMemberInfo(final Long memberId) {
@@ -68,5 +60,15 @@ public class MemberService {
                                 .point(tuple.getT2().getPoint())
                                 .build()))
                 .switchIfEmpty(Mono.error(new RuntimeException()));
+    }
+
+    private Mono<MemberDto> getMemberFromDb(final Long memberId) {
+        return memberRepository.findById(memberId)
+                .flatMap(memberRedis -> {
+                    log.info("getMember | member is empty. memberId: {}", memberId);
+                    final MemberRedis member = MemberRedis.from(memberRedis);
+                    return memberRedisRepository.save(member).thenReturn(member);
+                })
+                .map(MemberDto::from);
     }
 }
