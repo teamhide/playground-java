@@ -125,7 +125,7 @@ class MemberServiceTest {
         final Member member = Member.of("h@.id.e", "hide", "a", "a");
         when(memberRedisRepository.findById(any())).thenReturn(Mono.empty());
         when(memberRepository.findById(anyLong())).thenReturn(Mono.just(member));
-        when(memberRedisRepository.save(any())).thenReturn(Mono.empty());
+        when(memberRedisRepository.save(any())).thenReturn(Mono.just(MemberRedis.from(member)));
 
         // When
         final Mono<MemberDto> sut = memberService.getMember(memberId);

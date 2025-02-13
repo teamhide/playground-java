@@ -64,11 +64,9 @@ public class MemberService {
 
     private Mono<MemberDto> getMemberFromDb(final Long memberId) {
         return memberRepository.findById(memberId)
-                .flatMap(memberRedis -> {
-                    log.info("getMember | member is empty. memberId: {}", memberId);
-                    final MemberRedis member = MemberRedis.from(memberRedis);
-                    return memberRedisRepository.save(member).thenReturn(member);
-                })
+                .doOnNext((member) -> log.info("getMember | member is empty. memberId: {}", memberId))
+                .map(MemberRedis::from)
+                .flatMap(memberRedisRepository::save)
                 .map(MemberDto::from);
     }
 }
