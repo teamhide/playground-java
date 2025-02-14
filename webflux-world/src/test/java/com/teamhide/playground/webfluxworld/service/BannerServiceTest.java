@@ -25,6 +25,9 @@ class BannerServiceTest {
     @Mock
     private BannerRepository bannerRepository;
 
+    @Mock
+    private BannerMetaService bannerMetaService;
+
     @InjectMocks
     private BannerService bannerService;
 

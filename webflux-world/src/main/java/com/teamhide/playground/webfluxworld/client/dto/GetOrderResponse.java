@@ -1,4 +1,4 @@
-package com.teamhide.playground.webfluxworld.client;
+package com.teamhide.playground.webfluxworld.client.dto;
 
 import lombok.Builder;
 import lombok.Getter;

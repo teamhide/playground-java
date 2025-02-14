@@ -24,3 +24,19 @@ logging:
     org.springframework.r2dbc.core: debug
     org.springframework.data.mongodb.core: debug
     org.springframework.data.redis.core: debug
+
+clients:
+  order:
+    base-url: http://localhost:8080
+    connect-timeout-millis: 2000
+    read-timeout-millis: 2000
+    retry-max-attempts: 1
+    retry-backoff-millis: 500
+    max-connections: 50
+  point:
+    base-url: http://localhost:8080
+    connect-timeout-millis: 2000
+    read-timeout-millis: 2000
+    retry-max-attempts: 1
+    retry-backoff-millis: 500
+    max-connections: 50

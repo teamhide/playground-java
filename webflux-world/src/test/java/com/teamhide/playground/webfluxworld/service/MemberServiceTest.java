@@ -1,9 +1,9 @@
 package com.teamhide.playground.webfluxworld.service;
 
-import com.teamhide.playground.webfluxworld.client.GetOrderResponse;
-import com.teamhide.playground.webfluxworld.client.GetPointResponse;
 import com.teamhide.playground.webfluxworld.client.OrderClient;
 import com.teamhide.playground.webfluxworld.client.PointClient;
+import com.teamhide.playground.webfluxworld.client.dto.GetOrderResponse;
+import com.teamhide.playground.webfluxworld.client.dto.GetPointResponse;
 import com.teamhide.playground.webfluxworld.repository.rdb.Member;
 import com.teamhide.playground.webfluxworld.repository.rdb.MemberRepository;
 import com.teamhide.playground.webfluxworld.repository.redis.MemberRedis;
