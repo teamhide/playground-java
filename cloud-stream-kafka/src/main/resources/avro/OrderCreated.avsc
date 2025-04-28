@@ -1,0 +1,12 @@
+{
+  "doc": "Order created event",
+  "type": "record",
+  "name": "OrderCreated",
+  "namespace": "event.order",
+  "fields": [
+    {"name": "id", "type": "long"},
+    {"name": "userId", "type": "long"},
+    {"name": "price", "type":  "int"},
+    {"name": "productName", "type": "string"}
+  ]
+}
