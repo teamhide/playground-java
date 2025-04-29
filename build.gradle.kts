@@ -136,3 +136,12 @@ project(":cloud-stream-kafka") {
 		source("src/main/resources/avro")
 	}
 }
+
+project(":rule-engine") {
+	apply(plugin = "org.springframework.boot")
+	apply(plugin = "io.spring.dependency-management")
+
+	dependencies {
+		testImplementation("org.springframework.boot:spring-boot-starter-test")
+	}
+}

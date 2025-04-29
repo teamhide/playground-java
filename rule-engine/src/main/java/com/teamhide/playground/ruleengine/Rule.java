@@ -1,4 +1,4 @@
-package com.teamhide.playground.ruleengine.operator;
+package com.teamhide.playground.ruleengine;
 
 import java.util.List;
 

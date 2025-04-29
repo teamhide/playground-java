@@ -1,6 +1,6 @@
 package com.teamhide.playground.ruleengine.rules;
 
-import com.teamhide.playground.ruleengine.operator.Rule;
+import com.teamhide.playground.ruleengine.Rule;
 
 public class AdminNameRule implements Rule {
     private final String name;

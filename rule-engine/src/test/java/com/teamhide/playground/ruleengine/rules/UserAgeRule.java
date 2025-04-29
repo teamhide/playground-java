@@ -1,6 +1,6 @@
 package com.teamhide.playground.ruleengine.rules;
 
-import com.teamhide.playground.ruleengine.operator.Rule;
+import com.teamhide.playground.ruleengine.Rule;
 
 public class UserAgeRule implements Rule {
     private final int age;
