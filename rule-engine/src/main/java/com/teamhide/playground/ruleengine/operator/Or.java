@@ -1,5 +1,6 @@
 package com.teamhide.playground.ruleengine.operator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Or implements Rule {
@@ -11,6 +12,13 @@ public class Or implements Rule {
 
     @Override
     public boolean evaluate() {
-        return rules.stream().anyMatch(rule -> rule.evaluate());
+        return rules.stream().anyMatch(Rule::evaluate);
+    }
+
+    @Override
+    public Rule or(final Rule other) {
+        final List<Rule> newRules = new ArrayList<>(rules);
+        newRules.add(other);
+        return new Or(newRules);
     }
 }
