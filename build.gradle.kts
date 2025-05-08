@@ -145,3 +145,12 @@ project(":rule-engine") {
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
 	}
 }
+
+project(":fallbackcache") {
+	apply(plugin = "org.springframework.boot")
+	apply(plugin = "io.spring.dependency-management")
+
+	dependencies {
+		testImplementation("org.springframework.boot:spring-boot-starter-test")
+	}
+}
