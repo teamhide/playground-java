@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
+import java.time.Duration;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 class FallbackCacheTest {
     private CacheManager<String> firstCacheManager = new LocalCacheManager<>();
     private CacheManager<String> secondCacheManager = new RedisCacheManager<>();
-    private FallbackCache<String> fallbackCache = new FallbackCache<>(firstCacheManager, secondCacheManager);
+    private FallbackCache<String> fallbackCache = new FallbackCache<>(firstCacheManager, secondCacheManager, Duration.ofMinutes(5));
 
     @BeforeEach
     void setUp() {
@@ -53,7 +53,7 @@ class FallbackCacheTest {
         final String value = "data";
         @SuppressWarnings("unchecked")
         final Supplier<String> fallback = mock(Supplier.class);
-        secondCacheManager.put(key, value);
+        secondCacheManager.put(key, value, Duration.ofMinutes(1));
         assertThat(firstCacheManager.get(key)).isNull();
         assertThat(secondCacheManager.get(key)).isNotNull();
 
@@ -74,8 +74,8 @@ class FallbackCacheTest {
         final String value = "data";
         @SuppressWarnings("unchecked")
         final Supplier<String> fallback = mock(Supplier.class);
-        firstCacheManager.put(key, value);
-        secondCacheManager.put(key, value);
+        firstCacheManager.put(key, value, Duration.ofMinutes(1));
+        secondCacheManager.put(key, value, Duration.ofMinutes(1));
         assertThat(firstCacheManager.get(key)).isNotNull();
         assertThat(secondCacheManager.get(key)).isNotNull();
 

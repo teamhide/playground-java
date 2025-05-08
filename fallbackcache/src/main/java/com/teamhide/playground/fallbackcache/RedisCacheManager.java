@@ -1,5 +1,6 @@
 package com.teamhide.playground.fallbackcache;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,7 +13,12 @@ public class RedisCacheManager<V> implements CacheManager<V> {
     }
 
     @Override
-    public void put(final String key, final V value) {
+    public Duration getExpiredDuration(final String key) {
+        return Duration.ofSeconds(10);
+    }
+
+    @Override
+    public void put(final String key, final V value, final Duration ttl) {
         cacheStore.put(key, value);
     }
 
