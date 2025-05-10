@@ -154,3 +154,12 @@ project(":fallbackcache") {
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
 	}
 }
+
+project(":bulkhead") {
+	apply(plugin = "org.springframework.boot")
+	apply(plugin = "io.spring.dependency-management")
+
+	dependencies {
+		testImplementation("org.springframework.boot:spring-boot-starter-test")
+	}
+}
