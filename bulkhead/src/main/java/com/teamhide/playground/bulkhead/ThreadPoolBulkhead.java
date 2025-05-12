@@ -18,29 +18,26 @@ public class ThreadPoolBulkhead implements Bulkhead {
     }
 
     @Override
-    public <T> T execute(final Supplier<T> supplier, final Supplier<T> fallback) {
+    public <T> T execute(final Supplier<T> supplier) {
         final Future<T> future = executor.submit(supplier::get);
-        return doExecute(future, fallback);
+        return doExecute(future);
     }
 
     @Override
-    public void execute(final Runnable runnable, final Runnable fallback) {
+    public void execute(final Runnable runnable) {
         final Future<?> future = executor.submit(runnable);
-        doExecute(future, () -> {
-            fallback.run();
-            return null;
-        });
+        doExecute(future);
     }
 
-    private <T> T doExecute(final Future<T> future, final Supplier<T> fallback) {
+    private <T> T doExecute(final Future<T> future) {
         try {
             return future.get(timeoutMillis, TimeUnit.MICROSECONDS);
         } catch (TimeoutException e) {
             future.cancel(true);
-            return fallback.get();
+            throw new BulkheadException("Bulkhead timeout after " + timeoutMillis, e);
         } catch (InterruptedException | ExecutionException e) {
             Thread.currentThread().interrupt();
-            return fallback.get();
+            throw new BulkheadException("Exception during execution", e);
         }
     }
 }

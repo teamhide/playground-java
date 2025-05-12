@@ -2,10 +2,10 @@ package com.teamhide.playground.bulkhead;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
 public class SemaphoreBulkhead implements Bulkhead {
+
     private final Semaphore semaphore;
     private final long timeoutMillis;
 
@@ -15,45 +15,35 @@ public class SemaphoreBulkhead implements Bulkhead {
     }
 
     @Override
-    public <T> T execute(final Supplier<T> supplier, final Supplier<T> fallback) {
-        if (!semaphore.tryAcquire()) return fallback.get();
-        try {
-            return supplier.get();
-        } finally {
-            semaphore.release();
-        }
+    public <T> T execute(final Supplier<T> supplier) {
+        return doExecute(supplier);
     }
 
     @Override
-    public void execute(final Runnable runnable, final Runnable fallback) {
-        if (!semaphore.tryAcquire()) {
-            fallback.run();
-            return;
-        }
-        try {
+    public void execute(final Runnable runnable) {
+        doExecute(() -> {
             runnable.run();
-        } finally {
-            semaphore.release();
-        }
+            return null;
+        });
     }
 
-    private <T> T doExecute(final Supplier<T> supplier, final Supplier<T> fallback) throws TimeoutException {
-        final boolean acquired;
+    private <T> T doExecute(final Supplier<T> supplier) {
         try {
-            acquired = semaphore.tryAcquire(timeoutMillis, TimeUnit.MICROSECONDS);
+            boolean acquired = semaphore.tryAcquire(timeoutMillis, TimeUnit.MICROSECONDS);
+            if (!acquired) {
+                throw new BulkheadException("Bulkhead timeout after " + timeoutMillis);
+            }
+
+            try {
+                return supplier.get();
+            } catch (Exception e) {
+                throw new BulkheadException("Exception during execution", e);
+            } finally {
+                semaphore.release();
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return fallback.get();
-        }
-
-        if (!acquired) {
-            throw new TimeoutException("Bulkhead timeout");
-        }
-
-        try {
-            return supplier.get();
-        } finally {
-            semaphore.release();
+            throw new BulkheadException("Interrupted while waiting for permit", e);
         }
     }
 }
