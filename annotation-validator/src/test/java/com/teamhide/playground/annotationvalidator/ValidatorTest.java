@@ -9,7 +9,7 @@ class ValidatorTest {
     @Test
     void testNotNull() {
         // Given
-        final RequestDto requestDto = new RequestDto(null, "hide");
+        final RequestDto requestDto = new RequestDto(null, "hide", 1);
 
         // When, Then
         final ValidationException exception = assertThrows(ValidationException.class, () -> Validator.validate(requestDto));
@@ -19,10 +19,30 @@ class ValidatorTest {
     @Test
     void testNotBlank() {
         // Given
-        final RequestDto requestDto = new RequestDto("id", "");
+        final RequestDto requestDto = new RequestDto("id", "", 1);
 
         // When, Then
         final ValidationException exception = assertThrows(ValidationException.class, () -> Validator.validate(requestDto));
         assertThat(exception.getMessage()).contains("must not be blank");
+    }
+
+    @Test
+    void testMin() {
+        // Given
+        final RequestDto requestDto = new RequestDto("id", "name", -1);
+
+        // When, Then
+        final ValidationException exception = assertThrows(ValidationException.class, () -> Validator.validate(requestDto));
+        assertThat(exception.getMessage()).contains("must be >=");
+    }
+
+    @Test
+    void testMax() {
+        // Given
+        final RequestDto requestDto = new RequestDto("id", "name", 100);
+
+        // When, Then
+        final ValidationException exception = assertThrows(ValidationException.class, () -> Validator.validate(requestDto));
+        assertThat(exception.getMessage()).contains("must be <=");
     }
 }
