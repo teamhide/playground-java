@@ -172,3 +172,12 @@ project(":retry") {
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
 	}
 }
+
+project(":annotation-validator") {
+	apply(plugin = "org.springframework.boot")
+	apply(plugin = "io.spring.dependency-management")
+
+	dependencies {
+		testImplementation("org.springframework.boot:spring-boot-starter-test")
+	}
+}
