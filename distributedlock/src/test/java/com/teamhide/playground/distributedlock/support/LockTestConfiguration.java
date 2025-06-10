@@ -1,0 +1,39 @@
+package com.teamhide.playground.distributedlock.support;
+
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+
+import java.time.Duration;
+
+@TestConfiguration
+@Testcontainers
+public class LockTestConfiguration {
+    private static final String REDIS_IMAGE = "redis:latest";
+    private static final int REDIS_PORT = 6379;
+
+    @Container
+    private static final GenericContainer<?> redisContainer = new GenericContainer<>(REDIS_IMAGE)
+            .withExposedPorts(REDIS_PORT)
+            .waitingFor(Wait.forListeningPort())
+            .withStartupTimeout(Duration.ofSeconds(10));
+
+    static {
+        redisContainer.start();
+    }
+
+    @Bean
+    public RedissonClient redissonClient() {
+        final Config config = new Config();
+        final String host = redisContainer.getHost();
+        final Integer port = redisContainer.getMappedPort(REDIS_PORT);
+        config.useSingleServer().setAddress("redis://" + host + ":" + port);
+        return Redisson.create(config);
+    }
+}
