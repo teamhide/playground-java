@@ -1,5 +1,6 @@
 package com.teamhide.playground.distributedlock;
 
+import com.teamhide.playground.distributedlock.util.KeyGenerator;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 
@@ -17,8 +18,7 @@ public class RedissonLockManager implements LockManager {
 
     @Override
     public <T> T executeWithLock(final String identifier, final Supplier<T> supplier) {
-        final String key = config.getKey();
-        final String lockName = makeKey(key, identifier);
+        final String lockName = KeyGenerator.generate(config.getKey(), identifier);
         final RLock lock = redissonClient.getLock(lockName);
         try {
             lock.tryLock(config.getWaitTime(), config.getLeaseTime(), TimeUnit.MILLISECONDS);
@@ -41,9 +41,5 @@ public class RedissonLockManager implements LockManager {
             }
         }
         throw new IllegalStateException("Lock is null or held by other thread");
-    }
-
-    private String makeKey(final String lockName, final String identifier) {
-        return lockName + ":" + identifier;
     }
 }

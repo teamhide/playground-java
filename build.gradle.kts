@@ -200,5 +200,6 @@ project(":distributedlock") {
 		annotationProcessor("org.projectlombok:lombok")
 		testImplementation("org.testcontainers:testcontainers:1.21.1")
 		testImplementation("org.testcontainers:junit-jupiter:1.21.1")
+		testImplementation("org.springframework.boot:spring-boot-starter-data-redis")
 	}
 }

@@ -10,9 +10,6 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Configuration
 @EnableConfigurationProperties(LockRegistry.class)
@@ -41,10 +38,12 @@ public class LockAutoConfiguration {
     }
 
     @Bean
-    public LockRegistry lockRegistry(final List<LockProvider> lockProviders) {
-        final Map<String, LockProvider> providers = lockProviders.stream()
-                .collect(Collectors.toMap(LockProvider::type, Function.identity()));
-        providers.forEach((k, v) -> log.info("Registering lock provider '{}', value={}", k, v));
-        return new LockRegistry(providers);
+    public LockProviderRegistry lockProviderRegistry(final List<LockProvider> lockProviders) {
+        return new LockProviderRegistry(lockProviders);
+    }
+
+    @Bean
+    public LockRegistry lockRegistry(final LockProviderRegistry lockProviderRegistry) {
+        return new LockRegistry(lockProviderRegistry);
     }
 }

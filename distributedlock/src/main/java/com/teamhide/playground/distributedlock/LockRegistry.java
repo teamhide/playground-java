@@ -10,12 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @ConfigurationProperties(prefix = "lock")
 @Slf4j
 public class LockRegistry implements InitializingBean {
-    private final Map<String, LockProvider> lockProviders;
+    private final LockProviderRegistry lockProviderRegistry;
     private final ConcurrentHashMap<String, LockConfig> locks = new ConcurrentHashMap<>();
     private Map<String, LockProperties> instances;
 
-    public LockRegistry(final Map<String, LockProvider> lockProviders) {
-        this.lockProviders = lockProviders;
+    public LockRegistry(final LockProviderRegistry lockProviderRegistry) {
+        this.lockProviderRegistry = lockProviderRegistry;
     }
 
     public LockManager lockManager(final String lockName) {
@@ -23,7 +23,7 @@ public class LockRegistry implements InitializingBean {
         if (lockConfig == null) {
             throw new IllegalStateException("Lock '" + lockName + "' does not exist");
         }
-        final LockProvider lockProvider = lockProviders.get(lockConfig.getProvider());
+        final LockProvider lockProvider = lockProviderRegistry.getProvider(lockConfig.getProvider());
         if (lockProvider == null) {
             throw new IllegalStateException("No LockProvider found for provider: " + lockConfig.getProvider());
         }
