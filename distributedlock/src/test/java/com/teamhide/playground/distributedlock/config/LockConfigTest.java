@@ -1,4 +1,4 @@
-package com.teamhide.playground.distributedlock;
+package com.teamhide.playground.distributedlock.config;
 
 import org.junit.jupiter.api.Test;
 

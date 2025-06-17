@@ -1,5 +1,6 @@
 package com.teamhide.playground.distributedlock;
 
+import com.teamhide.playground.distributedlock.config.LockConfig;
 import com.teamhide.playground.distributedlock.util.KeyGenerator;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -23,7 +24,7 @@ public class RedissonLockManager implements LockManager {
         try {
             lock.tryLock(config.getWaitTime(), config.getLeaseTime(), TimeUnit.MILLISECONDS);
             return supplier.get();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             Thread.currentThread().interrupt();
             throw new IllegalStateException(e);
         } finally {

@@ -1,6 +1,6 @@
 package com.teamhide.playground.distributedlock;
 
-import com.teamhide.playground.distributedlock.support.IntegrationTest;
+import com.teamhide.playground.distributedlock.support.RedisIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.test.context.TestPropertySource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@IntegrationTest
+@RedisIntegrationTest
 @TestPropertySource(properties = {
     "lock.instances.sample.provider=mysql",
     "lock.instances.sample.key=test-lock",

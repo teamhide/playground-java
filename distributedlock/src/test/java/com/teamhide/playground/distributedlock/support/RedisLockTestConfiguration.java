@@ -19,7 +19,7 @@ import java.time.Duration;
 
 @TestConfiguration
 @Testcontainers
-public class LockTestConfiguration {
+public class RedisLockTestConfiguration {
     private static final String REDIS_IMAGE = "redis:latest";
     private static final int REDIS_PORT = 6379;
 

@@ -1,6 +1,6 @@
 package com.teamhide.playground.distributedlock;
 
-import com.teamhide.playground.distributedlock.support.IntegrationTest;
+import com.teamhide.playground.distributedlock.support.RedisIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@IntegrationTest
+@RedisIntegrationTest
 @TestPropertySource(properties = {
     "lock.instances.sample.provider=redis",
     "lock.instances.sample.key=test-lock",
@@ -50,6 +50,6 @@ class LockRegistryTest {
         final IllegalStateException exception = assertThrows(IllegalStateException.class, () -> lockRegistry.lockManager("sample2"));
 
         // Then
-        assertThat(exception.getMessage()).contains("does not exist");
+        assertThat(exception.getMessage()).isEqualTo("No LockConfig found for lockName: 'sample2'");
     }
 }

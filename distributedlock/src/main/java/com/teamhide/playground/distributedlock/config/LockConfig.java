@@ -1,4 +1,4 @@
-package com.teamhide.playground.distributedlock;
+package com.teamhide.playground.distributedlock.config;
 
 public class LockConfig {
     private String provider;

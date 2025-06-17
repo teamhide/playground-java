@@ -1,5 +1,6 @@
 package com.teamhide.playground.distributedlock;
 
+import com.teamhide.playground.distributedlock.config.LockConfig;
 import org.redisson.api.RedissonClient;
 
 public class RedisLockProvider implements LockProvider {

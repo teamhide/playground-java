@@ -1,6 +1,6 @@
 package com.teamhide.playground.distributedlock;
 
-import com.teamhide.playground.distributedlock.support.IntegrationTest;
+import com.teamhide.playground.distributedlock.support.RedisIntegrationTest;
 import com.teamhide.playground.distributedlock.support.LockSupportService;
 import com.teamhide.playground.distributedlock.util.KeyGenerator;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@IntegrationTest
+@RedisIntegrationTest
 @TestPropertySource(properties = {
         "lock.instances.test-lock.provider=redis",
         "lock.instances.test-lock.key=test-lock",

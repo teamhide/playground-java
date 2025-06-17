@@ -1,5 +1,7 @@
 package com.teamhide.playground.distributedlock;
 
+import com.teamhide.playground.distributedlock.config.LockConfigLoader;
+import com.teamhide.playground.distributedlock.config.LockInstances;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -12,7 +14,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Configuration
-@EnableConfigurationProperties(LockRegistry.class)
+@EnableConfigurationProperties(LockInstances.class)
 @Slf4j
 public class LockAutoConfiguration {
     @Configuration
@@ -43,7 +45,12 @@ public class LockAutoConfiguration {
     }
 
     @Bean
-    public LockRegistry lockRegistry(final LockProviderRegistry lockProviderRegistry) {
-        return new LockRegistry(lockProviderRegistry);
+    public LockConfigLoader lockConfigLoader(final LockInstances instances) {
+        return new LockConfigLoader(instances);
+    }
+
+    @Bean
+    public LockRegistry lockRegistry(final LockProviderRegistry lockProviderRegistry, final LockConfigLoader lockConfigLoader) {
+        return new LockRegistry(lockProviderRegistry, lockConfigLoader);
     }
 }

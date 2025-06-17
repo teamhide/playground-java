@@ -1,5 +1,7 @@
 package com.teamhide.playground.distributedlock;
 
+import com.teamhide.playground.distributedlock.config.LockConfig;
+
 import javax.sql.DataSource;
 
 public class MySqlLockProvider implements LockProvider {
