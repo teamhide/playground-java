@@ -182,7 +182,7 @@ project(":annotation-validator") {
 	}
 }
 
-project(":distributedlock") {
+project(":gatekeeper") {
 	apply(plugin = "org.springframework.boot")
 	apply(plugin = "io.spring.dependency-management")
 
@@ -193,7 +193,7 @@ project(":distributedlock") {
 	}
 }
 
-project(":distributedlock") {
+project(":gatekeeper") {
 	dependencies {
 		compileOnly("org.redisson:redisson:3.49.0")
 		compileOnly("org.projectlombok:lombok")
