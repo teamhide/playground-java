@@ -2,8 +2,9 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.4.2"
 	id("io.spring.dependency-management") version "1.1.7"
-//	id("com.github.davidmc24.gradle.plugin.avro") version "1.9.1" apply false
 	id("com.github.davidmc24.gradle.plugin.avro") version "1.9.1"
+	id("java-library")
+	id("java-test-fixtures")
 }
 
 java {
@@ -183,23 +184,63 @@ project(":annotation-validator") {
 }
 
 project(":gatekeeper") {
-	apply(plugin = "org.springframework.boot")
-	apply(plugin = "io.spring.dependency-management")
+	allprojects {
+		apply(plugin = "org.springframework.boot")
+		apply(plugin = "io.spring.dependency-management")
+		apply(plugin = "java-library")
+		apply(plugin = "java-test-fixtures")
+	}
+}
 
+project(":gatekeeper:gatekeeper-core") {
 	dependencies {
 		implementation("org.springframework.boot:spring-boot-starter")
 		implementation("org.redisson:redisson:3.49.0")
 		testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+		compileOnly("org.redisson:redisson:3.49.0")
+		compileOnly("org.projectlombok:lombok")
+
+		annotationProcessor("org.projectlombok:lombok")
+
+		testImplementation("org.testcontainers:testcontainers:1.21.1")
+		testImplementation("org.testcontainers:junit-jupiter:1.21.1")
+		testImplementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+		testFixturesImplementation("org.springframework.boot:spring-boot-starter-test")
+		testFixturesImplementation("org.testcontainers:testcontainers:1.21.1")
+		testFixturesImplementation("org.testcontainers:testcontainers:1.21.1")
+		testFixturesImplementation("org.testcontainers:junit-jupiter:1.21.1")
+		testFixturesImplementation("org.springframework.boot:spring-boot-starter-data-redis")
+		testFixturesImplementation("org.redisson:redisson:3.49.0")
 	}
 }
 
-project(":gatekeeper") {
+project(":gatekeeper:gatekeeper-redisson") {
 	dependencies {
+		api(project(":gatekeeper:gatekeeper-core"))
+		implementation("org.springframework.boot:spring-boot-starter")
+		implementation("org.redisson:redisson:3.49.0")
+		testImplementation("org.springframework.boot:spring-boot-starter-test")
 		compileOnly("org.redisson:redisson:3.49.0")
 		compileOnly("org.projectlombok:lombok")
 		annotationProcessor("org.projectlombok:lombok")
 		testImplementation("org.testcontainers:testcontainers:1.21.1")
 		testImplementation("org.testcontainers:junit-jupiter:1.21.1")
 		testImplementation("org.springframework.boot:spring-boot-starter-data-redis")
+		testImplementation(testFixtures(project(":gatekeeper:gatekeeper-core")))
+	}
+}
+
+project(":gatekeeper:gatekeeper-mysql") {
+	dependencies {
+		api(project(":gatekeeper:gatekeeper-core"))
+		implementation("org.springframework.boot:spring-boot-starter")
+		testImplementation("org.springframework.boot:spring-boot-starter-test")
+		compileOnly("org.projectlombok:lombok")
+		annotationProcessor("org.projectlombok:lombok")
+		testImplementation("org.testcontainers:testcontainers:1.21.1")
+		testImplementation("org.testcontainers:junit-jupiter:1.21.1")
+		testImplementation(testFixtures(project(":gatekeeper:gatekeeper-core")))
 	}
 }

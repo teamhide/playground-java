@@ -13,3 +13,9 @@ include("retry")
 include("hunit5")
 include("annotation-validator")
 include("gatekeeper")
+include("gatekeeper:gatekeeper-core")
+findProject(":gatekeeper:gatekeeper-core")?.name = "gatekeeper-core"
+include("gatekeeper:gatekeeper-redisson")
+findProject(":gatekeeper:gatekeeper-redisson")?.name = "gatekeeper-redisson"
+include("gatekeeper:gatekeeper-mysql")
+findProject(":gatekeeper:gatekeeper-mysql")?.name = "gatekeeper-mysql"
