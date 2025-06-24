@@ -19,6 +19,11 @@ public class LockAutoConfiguration {
     }
 
     @Bean
+    public ReactiveLockProviderRegistry reactiveLockProviderRegistry(final List<ReactiveLockProvider> lockProviders) {
+        return new ReactiveLockProviderRegistry(lockProviders);
+    }
+
+    @Bean
     public LockConfigLoader lockConfigLoader(final LockInstances instances) {
         return new LockConfigLoader(instances);
     }
@@ -26,5 +31,10 @@ public class LockAutoConfiguration {
     @Bean
     public LockRegistry lockRegistry(final LockProviderRegistry lockProviderRegistry, final LockConfigLoader lockConfigLoader) {
         return new LockRegistry(lockProviderRegistry, lockConfigLoader);
+    }
+
+    @Bean
+    public ReactiveLockRegistry reactiveLockRegistry(final ReactiveLockProviderRegistry lockProviderRegistry, final LockConfigLoader lockConfigLoader) {
+        return new ReactiveLockRegistry(lockProviderRegistry, lockConfigLoader);
     }
 }

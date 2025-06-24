@@ -19,3 +19,5 @@ include("gatekeeper:gatekeeper-redisson")
 findProject(":gatekeeper:gatekeeper-redisson")?.name = "gatekeeper-redisson"
 include("gatekeeper:gatekeeper-mysql")
 findProject(":gatekeeper:gatekeeper-mysql")?.name = "gatekeeper-mysql"
+include("gatekeeper:gatekeeper-mysql-reactive")
+findProject(":gatekeeper:gatekeeper-mysql-reactive")?.name = "gatekeeper-mysql-reactive"
