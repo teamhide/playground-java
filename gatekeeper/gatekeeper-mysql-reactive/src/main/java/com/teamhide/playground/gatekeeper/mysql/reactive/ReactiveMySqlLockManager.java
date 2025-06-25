@@ -5,12 +5,14 @@ import com.teamhide.playground.gatekeeper.config.LockConfig;
 import com.teamhide.playground.gatekeeper.util.KeyGenerator;
 import io.r2dbc.spi.Connection;
 import io.r2dbc.spi.ConnectionFactory;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+@Slf4j
 public class ReactiveMySqlLockManager implements ReactiveLockManager {
     private final ConnectionFactory connectionFactory;
     private final LockConfig lockConfig;
@@ -30,10 +32,8 @@ public class ReactiveMySqlLockManager implements ReactiveLockManager {
                 conn -> acquire(conn, lockKey, timeoutSeconds)
                         .filter(Boolean::booleanValue)
                         .switchIfEmpty(Mono.error(new IllegalStateException("Failed to acquire lock for key: " + lockKey)))
-                        .flatMap(acquired -> supplier.get()
-                                .flatMap(result -> releaseLock(conn, lockKey).thenReturn(result))
-                                .onErrorResume(ex -> releaseLock(conn, lockKey).then(Mono.error(ex)))),
-                Connection::close
+                        .flatMap(acquired -> supplier.get()),
+                conn -> release(conn, lockKey).thenReturn(conn.close())
         );
     }
 
@@ -47,11 +47,8 @@ public class ReactiveMySqlLockManager implements ReactiveLockManager {
                 conn -> acquire(conn, lockKey, timeoutSeconds)
                         .filter(Boolean::booleanValue)
                         .switchIfEmpty(Mono.error(new IllegalStateException("Failed to acquire lock for key: " + lockKey)))
-                        .flatMapMany(acquired -> supplier.get()
-                                .concatWith(releaseLock(conn, lockKey).then(Mono.empty()))
-                                .onErrorResume(ex -> releaseLock(conn, lockKey).then(Mono.empty()))
-                        ),
-                Connection::close
+                        .flatMapMany(acquired -> supplier.get()),
+                conn -> release(conn, lockKey).thenReturn(conn.close())
         );
     }
 
@@ -63,14 +60,20 @@ public class ReactiveMySqlLockManager implements ReactiveLockManager {
                 .flatMap(result -> Mono.from(result.map((row, meta) -> {
                     final Long success = row.get(0, Long.class);
                     return success != null && success == 1L;
-                })));
+                })))
+                .doOnSuccess(r -> log.info("Acquired lock for key: {}", lockKey))
+                .doOnError(e -> log.error("Failed to acquire lock for key: {}", lockKey))
+                .onErrorMap(e -> new IllegalStateException("Failed to acquire lock for key: " + lockKey));
     }
 
-    private Mono<Void> releaseLock(final Connection connection, final String lockKey) {
+    private Mono<Void> release(final Connection connection, final String lockKey) {
         return Mono.from(connection.createStatement("SELECT RELEASE_LOCK(?)")
                         .bind(0, lockKey)
                         .execute())
                 .flatMap(result -> Mono.from(result.map((row, meta) -> row.get(0))))
+                .doOnSuccess(r -> log.info("Released lock for key: {}", lockKey))
+                .doOnError(e -> log.error("Failed to release lock for key: {}", lockKey))
+                .onErrorMap(e -> new IllegalStateException("Failed to release lock for key: " + lockKey))
                 .then();
     }
 }
