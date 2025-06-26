@@ -11,10 +11,11 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.data:spring-data-r2dbc:3.5.1")
+    implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
     implementation("io.asyncer:r2dbc-mysql:1.4.0")
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
 }
 
 tasks.test {

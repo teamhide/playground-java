@@ -16,6 +16,8 @@ import java.util.function.Supplier;
 public class ReactiveMySqlLockManager implements ReactiveLockManager {
     private final ConnectionFactory connectionFactory;
     private final LockConfig lockConfig;
+    private static final String GET_LOCK_STATEMENT = "SELECT GET_LOCK(?, ?)";
+    private static final String RELEASE_LOCK_STATEMENT = "SELECT RELEASE_LOCK(?)";
 
     public ReactiveMySqlLockManager(final ConnectionFactory connectionFactory, final LockConfig lockConfig) {
         this.connectionFactory = connectionFactory;
@@ -29,11 +31,8 @@ public class ReactiveMySqlLockManager implements ReactiveLockManager {
 
         return Mono.usingWhen(
                 connectionFactory.create(),
-                conn -> acquire(conn, lockKey, timeoutSeconds)
-                        .filter(Boolean::booleanValue)
-                        .switchIfEmpty(Mono.error(new IllegalStateException("Failed to acquire lock for key: " + lockKey)))
-                        .flatMap(acquired -> supplier.get()),
-                conn -> release(conn, lockKey).thenReturn(conn.close())
+                conn -> doExecuteWithLock(conn, lockKey, timeoutSeconds, supplier),
+                Connection::close
         );
     }
 
@@ -44,16 +43,43 @@ public class ReactiveMySqlLockManager implements ReactiveLockManager {
 
         return Flux.usingWhen(
                 connectionFactory.create(),
-                conn -> acquire(conn, lockKey, timeoutSeconds)
+                conn -> doExecuteManyWithLock(conn, lockKey, timeoutSeconds, supplier),
+                Connection::close
+        );
+    }
+
+    private <T> Mono<T> doExecuteWithLock(
+            final Connection connection,
+            final String lockKey,
+            final int timeoutSeconds,
+            final Supplier<Mono<T>> supplier
+    ) {
+        return Mono.usingWhen(
+                acquire(connection, lockKey, timeoutSeconds)
                         .filter(Boolean::booleanValue)
-                        .switchIfEmpty(Mono.error(new IllegalStateException("Failed to acquire lock for key: " + lockKey)))
-                        .flatMapMany(acquired -> supplier.get()),
-                conn -> release(conn, lockKey).thenReturn(conn.close())
+                        .switchIfEmpty(Mono.error(new IllegalStateException("Failed to acquire lock for key: " + lockKey))),
+                acquired -> supplier.get(),
+                acquired -> release(connection, lockKey)
+        );
+    }
+
+    private <T> Flux<T> doExecuteManyWithLock(
+            final Connection connection,
+            final String lockKey,
+            final int timeoutSeconds,
+            final Supplier<Flux<T>> supplier
+    ) {
+        return Flux.usingWhen(
+                acquire(connection, lockKey, timeoutSeconds)
+                        .filter(Boolean::booleanValue)
+                        .switchIfEmpty(Mono.error(new IllegalStateException("Failed to acquire lock for key: " + lockKey))),
+                acquired -> supplier.get(),
+                acquired -> release(connection, lockKey)
         );
     }
 
     private Mono<Boolean> acquire(final Connection connection, final String lockKey, final int timeoutSeconds) {
-        return Mono.from(connection.createStatement("SELECT GET_LOCK(?, ?)")
+        return Mono.from(connection.createStatement(GET_LOCK_STATEMENT)
                         .bind(0, lockKey)
                         .bind(1, timeoutSeconds)
                         .execute())
@@ -67,7 +93,7 @@ public class ReactiveMySqlLockManager implements ReactiveLockManager {
     }
 
     private Mono<Void> release(final Connection connection, final String lockKey) {
-        return Mono.from(connection.createStatement("SELECT RELEASE_LOCK(?)")
+        return Mono.from(connection.createStatement(RELEASE_LOCK_STATEMENT)
                         .bind(0, lockKey)
                         .execute())
                 .flatMap(result -> Mono.from(result.map((row, meta) -> row.get(0))))

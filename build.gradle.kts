@@ -254,6 +254,7 @@ project(":gatekeeper:gatekeeper-mysql-reactive") {
 		annotationProcessor("org.projectlombok:lombok")
 		testImplementation("org.testcontainers:testcontainers:1.21.1")
 		testImplementation("org.testcontainers:junit-jupiter:1.21.1")
+		testImplementation("io.projectreactor:reactor-test")
 		testImplementation(testFixtures(project(":gatekeeper:gatekeeper-core")))
 	}
 }
