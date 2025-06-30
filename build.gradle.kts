@@ -125,3 +125,12 @@ project(":gatekeeper:gatekeeper-mysql-reactive") {
 		api(project(":gatekeeper:gatekeeper-core"))
 	}
 }
+
+project(":gatekeeper:gatekeeper-kotlin") {
+	dependencies {
+		api(project(":gatekeeper:gatekeeper-core"))
+		api(project(":gatekeeper:gatekeeper-mysql"))
+		api(project(":gatekeeper:gatekeeper-mysql-reactive"))
+		api(project(":gatekeeper:gatekeeper-redisson"))
+	}
+}

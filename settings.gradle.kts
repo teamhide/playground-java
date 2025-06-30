@@ -1,3 +1,6 @@
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+}
 rootProject.name = "playground"
 include("playground-server")
 include("ratelimiter")
@@ -21,3 +24,5 @@ include("gatekeeper:gatekeeper-mysql")
 findProject(":gatekeeper:gatekeeper-mysql")?.name = "gatekeeper-mysql"
 include("gatekeeper:gatekeeper-mysql-reactive")
 findProject(":gatekeeper:gatekeeper-mysql-reactive")?.name = "gatekeeper-mysql-reactive"
+include("gatekeeper:gatekeeper-kotlin")
+findProject(":gatekeeper:gatekeeper-kotlin")?.name = "gatekeeper-kotlin"
