@@ -19,4 +19,9 @@ public class ReactiveMySqlLockAutoConfiguration {
             return new ReactiveMySqlLockProvider(connectionFactory);
         }
     }
+
+    @Bean
+    public MdcContextConfiguration mdcContextConfiguration() {
+        return new MdcContextConfiguration();
+    }
 }

@@ -29,11 +29,11 @@ public class ReactiveMySqlLockManager implements ReactiveLockManager {
         final String lockKey = KeyGenerator.generate(lockConfig.getKey(), identifier);
         final int timeoutSeconds = (int) TimeUnit.MILLISECONDS.toSeconds(lockConfig.getWaitTime());
 
-        return Mono.usingWhen(
+        return Mono.defer(() -> Mono.usingWhen(
                 connectionFactory.create(),
                 conn -> doExecuteWithLock(conn, lockKey, timeoutSeconds, supplier),
                 Connection::close
-        );
+        )).contextWrite(MdcUtil.mdcToReactorContext());
     }
 
     @Override
@@ -41,11 +41,11 @@ public class ReactiveMySqlLockManager implements ReactiveLockManager {
         final String lockKey = KeyGenerator.generate(lockConfig.getKey(), identifier);
         final int timeoutSeconds = (int) TimeUnit.MILLISECONDS.toSeconds(lockConfig.getWaitTime());
 
-        return Flux.usingWhen(
+        return Flux.defer(() -> Flux.usingWhen(
                 connectionFactory.create(),
                 conn -> doExecuteManyWithLock(conn, lockKey, timeoutSeconds, supplier),
                 Connection::close
-        );
+        )).contextWrite(MdcUtil.mdcToReactorContext());
     }
 
     private <T> Mono<T> doExecuteWithLock(
