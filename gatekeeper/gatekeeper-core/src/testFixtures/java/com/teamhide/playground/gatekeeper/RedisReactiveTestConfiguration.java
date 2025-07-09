@@ -2,6 +2,7 @@ package com.teamhide.playground.gatekeeper;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.api.RedissonReactiveClient;
 import org.redisson.config.Config;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -19,15 +20,16 @@ import java.time.Duration;
 
 @TestConfiguration
 @Testcontainers
-public class RedisLockTestConfiguration {
+public class RedisReactiveTestConfiguration {
     private static final String REDIS_IMAGE = "redis:latest";
     private static final int REDIS_PORT = 6379;
 
     @Container
-    private static final GenericContainer<?> redisContainer = new GenericContainer<>(REDIS_IMAGE)
-            .withExposedPorts(REDIS_PORT)
-            .waitingFor(Wait.forListeningPort())
-            .withStartupTimeout(Duration.ofSeconds(10));
+    private static final GenericContainer<?> redisContainer =
+            new GenericContainer<>(REDIS_IMAGE)
+                    .withExposedPorts(REDIS_PORT)
+                    .waitingFor(Wait.forListeningPort())
+                    .withStartupTimeout(Duration.ofSeconds(10));
 
     static {
         redisContainer.start();
@@ -50,16 +52,20 @@ public class RedisLockTestConfiguration {
     }
 
     @Bean
-    public RedisTemplate<String, String> redisTemplate(final RedisConnectionFactory redisConnectionFactory) {
+    public RedissonReactiveClient redissonReactiveClient(final RedissonClient redissonClient) {
+        return redissonClient.reactive();
+    }
+
+    @Bean
+    public RedisTemplate<String, String> redisTemplate(
+            final RedisConnectionFactory redisConnectionFactory) {
         final RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
         final StringRedisSerializer serializer = new StringRedisSerializer();
-
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(serializer);
         redisTemplate.setValueSerializer(serializer);
         redisTemplate.setHashKeySerializer(serializer);
         redisTemplate.setHashValueSerializer(serializer);
-
         return redisTemplate;
     }
 }

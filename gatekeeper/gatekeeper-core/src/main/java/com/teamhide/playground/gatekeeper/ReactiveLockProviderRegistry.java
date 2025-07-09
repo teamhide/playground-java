@@ -12,25 +12,33 @@ public class ReactiveLockProviderRegistry {
     private final Map<String, ReactiveLockProvider> typeToProvider;
 
     public ReactiveLockProviderRegistry(final List<ReactiveLockProvider> providers) {
-        this.typeToProvider = providers.stream()
-                .peek(provider ->
-                        log.info("Registering ReactiveLockProvider: type='{}', instance={}", provider.type(), provider.getClass().getSimpleName())
-                )
-                .collect(Collectors.toMap(
-                                ReactiveLockProvider::type,
-                                Function.identity(),
-                                (existing, replacement) -> {
-                                    throw new IllegalStateException("Duplicate ReactiveLockProvider: " + existing.type());
-                                }
-                        )
-                );
+        this.typeToProvider =
+                providers.stream()
+                        .peek(
+                                provider ->
+                                        log.info(
+                                                "Registering ReactiveLockProvider: type='{}', instance={}",
+                                                provider.type(),
+                                                provider.getClass().getSimpleName()))
+                        .collect(
+                                Collectors.toMap(
+                                        ReactiveLockProvider::type,
+                                        Function.identity(),
+                                        (existing, replacement) -> {
+                                            throw new DistributedLockException(
+                                                    "Duplicate ReactiveLockProvider: " + existing.type());
+                                        }));
     }
 
     public ReactiveLockProvider get(final String type) {
-        final ReactiveLockProvider lockProvider = typeToProvider.get(type);
-        if (lockProvider == null) {
-            throw new IllegalStateException("No ReactiveLockProvider found for provider: " + type);
+        final ReactiveLockProvider provider = typeToProvider.get(type);
+        if (provider == null) {
+            throw new DistributedLockException("No ReactiveLockProvider found for type: " + type);
         }
-        return lockProvider;
+        return provider;
+    }
+
+    public boolean contains(final String type) {
+        return typeToProvider.containsKey(type);
     }
 }
